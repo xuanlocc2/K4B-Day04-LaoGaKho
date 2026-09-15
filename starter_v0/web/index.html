@@ -35,7 +35,7 @@
           <button class="nav-item" data-view="knowledge"><span class="nav-icon">⊞</span>Knowledge base</button>
         </nav>
 
-        <nav class="nav-section">
+        <nav class="nav-section" id="recentConversations">
           <p class="nav-label">Recent conversations</p>
           <button class="conversation-link selected">VPN production status</button>
           <button class="conversation-link">Laptop LT-204 check</button>
@@ -85,7 +85,7 @@
               <div class="chat-card-header">
                 <div class="assistant-identity">
                   <div class="assistant-avatar">✦</div>
-                  <div><b>Northstar Assistant</b><span><i></i> Online · v0</span></div>
+                  <div><b>Northstar Assistant</b><span><i></i> Online · <b class="version-badge">v3</b></span></div>
                 </div>
                 <button class="icon-button" aria-label="Tùy chọn hội thoại">•••</button>
               </div>
@@ -94,45 +94,8 @@
                 <div class="message-row assistant-row">
                   <div class="message-avatar">✦</div>
                   <div class="message-content">
-                    <span class="message-author">Northstar Assistant <time>10:42 AM</time></span>
-                    <div class="bubble assistant-bubble">
-                      Chào Alex! Mình có thể giúp bạn kiểm tra dịch vụ, chẩn đoán thiết bị, tìm hướng dẫn nội bộ hoặc tạo ticket hỗ trợ. Bạn muốn bắt đầu từ đâu?
-                    </div>
-                  </div>
-                </div>
-
-                <div class="message-row user-row">
-                  <div class="message-content">
-                    <span class="message-author">Bạn <time>10:43 AM</time></span>
-                    <div class="bubble user-bubble">Kiểm tra trạng thái VPN production hiện tại</div>
-                  </div>
-                  <div class="message-avatar user-avatar">AL</div>
-                </div>
-
-                <div class="tool-event" data-collapsible>
-                  <button class="tool-event-header">
-                    <span class="tool-status">✓</span><span class="tool-name">check_service_status</span>
-                    <span class="tool-meta">completed · 0.4s</span><span class="chevron">⌄</span>
-                  </button>
-                  <div class="tool-event-body">
-                    <div><label>INPUT</label><code>{ "service": "vpn", "environment": "production" }</code></div>
-                    <div><label>RESULT</label><code class="success-code">{ "status": "operational", "uptime": "99.98%" }</code></div>
-                  </div>
-                </div>
-
-                <div class="message-row assistant-row">
-                  <div class="message-avatar">✦</div>
-                  <div class="message-content">
-                    <span class="message-author">Northstar Assistant <time>10:43 AM</time></span>
-                    <div class="bubble assistant-bubble">
-                      <span class="success-dot"></span> VPN production đang hoạt động bình thường.
-                      <div class="result-grid">
-                        <div><small>STATUS</small><b class="green-text">Operational</b></div>
-                        <div><small>UPTIME</small><b>99.98%</b></div>
-                        <div><small>LAST CHECK</small><b>Vừa xong</b></div>
-                      </div>
-                      Không ghi nhận sự cố nào trong hệ thống. Bạn có muốn mình kiểm tra kết nối VPN trên thiết bị cụ thể không?
-                    </div>
+                    <span class="message-author">Northstar Assistant <time>now</time></span>
+                    <div class="bubble assistant-bubble">Đã kết nối agent thật. Hãy gửi yêu cầu để kiểm tra tool call và kết quả.</div>
                   </div>
                 </div>
               </div>
@@ -152,18 +115,17 @@
           <aside class="details-column">
             <div class="detail-card session-card">
               <div class="detail-heading"><span>SESSION DETAILS</span><button class="icon-button">•••</button></div>
-              <div class="session-title"><span class="session-icon">◒</span><div><b>VPN production status</b><span>Started today at 10:42 AM</span></div></div>
+              <div class="session-title"><span class="session-icon">◒</span><div><b id="sessionTitle">Live agent session</b><span>Connected to local backend</span></div></div>
               <div class="detail-divider"></div>
-              <div class="detail-row"><span>Version</span><b class="version-badge">v0</b></div>
-              <div class="detail-row"><span>Provider</span><b>OpenRouter</b></div>
-              <div class="detail-row"><span>Model</span><b>GPT-4o mini</b></div>
-              <div class="detail-row"><span>Messages</span><b id="messageCount">4</b></div>
+              <div class="detail-row"><span>Version</span><b class="version-badge">v3</b></div>
+              <div class="detail-row"><span>Provider</span><b id="providerName">OpenRouter</b></div>
+              <div class="detail-row"><span>Model</span><b id="modelName">GPT-4o mini</b></div>
+              <div class="detail-row"><span>Messages</span><b id="messageCount">1</b></div>
             </div>
 
             <div class="detail-card tools-card">
               <div class="detail-heading"><span>TOOL ACTIVITY</span><span class="live-label"><i></i> LIVE</span></div>
-              <div class="activity-item"><span class="activity-check">✓</span><div><b>check_service_status</b><span>VPN · production</span></div><time>10:43</time></div>
-              <div class="activity-item muted-activity"><span class="activity-check">✓</span><div><b>clarify</b><span>No clarification needed</span></div><time>—</time></div>
+              <div id="toolActivity"><div class="activity-item muted-activity"><span class="activity-check">·</span><div><b>Waiting for a real tool call</b><span>Send a message to start</span></div><time>—</time></div></div>
               <button class="view-all-button">Xem toàn bộ activity <span>→</span></button>
             </div>
 
