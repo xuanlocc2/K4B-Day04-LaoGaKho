@@ -8,7 +8,7 @@
       "id": "G01_policy_external_tools",
       "phase": "B",
       "query": "Chính sách công ty quy định thế nào trước khi dùng công cụ AI bên ngoài cho tài liệu nội bộ?",
-      "failure_type": "wrong_tool",
+      "failure_type": "wrong_arg_value",
       "expect": {"tool_calls": [{"name": "policy", "args": {"policy_area": "external_tools"}}]},
       "metadata": {"what_it_tests": "Câu hỏi về quy định nội bộ phải dùng policy, không tìm KB hoặc web."}
     },
