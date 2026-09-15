@@ -1,7 +1,108 @@
 {
   "dataset_id": "day04_v3_helpdesk_group",
   "dataset_role": "group",
-  "description": "Template intentionally left empty. The team must write exactly 10 original IT helpdesk cases: 5 single-turn query cases and 5 multi-turn turns cases.",
+  "description": "Ten original IT helpdesk evaluation cases written by the team: five single-turn and five multi-turn cases.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_policy_external_tools",
+      "phase": "B",
+      "query": "Chính sách công ty quy định thế nào trước khi dùng công cụ AI bên ngoài cho tài liệu nội bộ?",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "policy", "args": {"policy_area": "external_tools"}}]},
+      "metadata": {"what_it_tests": "Câu hỏi về quy định nội bộ phải dùng policy, không tìm KB hoặc web."}
+    },
+    {
+      "id": "G02_kb_meeting_room_audio",
+      "phase": "B",
+      "query": "Tìm hướng dẫn xử lý khi micro phòng họp không hoạt động.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "search_kb", "args": {"category": "meeting_room"}}]},
+      "metadata": {"what_it_tests": "Yêu cầu hướng dẫn khắc phục theo chủ đề phải route tới knowledge base đúng category."}
+    },
+    {
+      "id": "G03_public_device_support",
+      "phase": "B",
+      "query": "Tìm trang hỗ trợ công khai của Dell cho model Latitude 7440.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "search_device_info", "args": {"manufacturer": "Dell", "model": "Latitude 7440", "query_type": "support"}}]},
+      "metadata": {"what_it_tests": "Web search chỉ nhận manufacturer/model công khai, không phải asset ID nội bộ."}
+    },
+    {
+      "id": "G04_room_device_hardware",
+      "phase": "B",
+      "query": "Kiểm tra riêng phần cứng của thiết bị phòng họp RM-501.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "RM-501", "check": "hardware"}}]},
+      "metadata": {"what_it_tests": "Asset hợp lệ phải được giữ nguyên và yêu cầu hardware phải map đúng check."}
+    },
+    {
+      "id": "G05_missing_printer_asset",
+      "phase": "B",
+      "query": "Máy in ở tầng 4 không in được, kiểm tra giúp mình.",
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+      "metadata": {"what_it_tests": "Không được đoán mã printer asset từ vị trí; phải hỏi thêm thông tin."}
+    },
+    {
+      "id": "G06_multiturn_correct_asset_and_check",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Kiểm tra phần mềm trên laptop LT-240."},
+        {"role": "user", "content": "Mình ghi nhầm mã máy, đúng là LT-411."},
+        {"role": "user", "content": "Chỉ kiểm tra software trên máy đã sửa đó."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "LT-411", "check": "software"}}]},
+      "metadata": {"what_it_tests": "Asset ID được sửa ở lượt sau phải thay thế ID cũ, đồng thời dùng check từ intent cuối."}
+    },
+    {
+      "id": "G07_multiturn_switch_to_service_status",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Tìm hướng dẫn đặt lại Outlook profile."},
+        {"role": "user", "content": "Không cần hướng dẫn nữa; mình nghi lỗi là của dịch vụ chung."},
+        {"role": "user", "content": "Kiểm tra trạng thái SSO ở staging giúp mình."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "check_service_status", "args": {"service": "sso", "environment": "staging"}}]},
+      "metadata": {"what_it_tests": "Intent cuối thay thế hoàn toàn KB request cũ và phải route sang service-status tool."}
+    },
+    {
+      "id": "G08_multiturn_cancel_ticket",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Tạo ticket cho lỗi Wi-Fi của LT-240 với mức high."},
+        {"role": "user", "content": "Tạm thời đừng tạo ticket nữa."},
+        {"role": "user", "content": "Xác nhận là yêu cầu tạo ticket đã được hủy."}
+      ],
+      "failure_type": "unnecessary_tool",
+      "expect": {"no_tool": true, "behavior": "answer_without_tool"},
+      "metadata": {"what_it_tests": "Hủy ở lượt sau phải thắng write request cũ; không gọi clarify hay create_ticket."}
+    },
+    {
+      "id": "G09_multiturn_confirmation_after_change",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Tạo ticket cho PR-404 bị kẹt hàng đợi in, mức medium."},
+        {"role": "user", "content": "Đổi mức ưu tiên thành high vì ảnh hưởng cả tầng 4."},
+        {"role": "user", "content": "Hãy tóm tắt ticket mới và hỏi xác nhận trước khi tạo."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {"what_it_tests": "Thay đổi priority làm confirmation cũ không đủ; agent phải dừng ở confirmation boundary."}
+    },
+    {
+      "id": "G10_multiturn_latest_user_lookup",
+      "phase": "B",
+      "turns": [
+        {"role": "user", "content": "Kiểm tra hardware của DT-087."},
+        {"role": "user", "content": "Bỏ qua việc kiểm tra thiết bị này."},
+        {"role": "user", "content": "Thay vào đó, tra cứu tài khoản EMP-1010."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "lookup_user", "args": {"employee_id": "EMP-1010"}}]},
+      "metadata": {"what_it_tests": "Agent phải bỏ stale device request và chỉ thực hiện intent mới nhất."}
+    }
+  ]
 }
