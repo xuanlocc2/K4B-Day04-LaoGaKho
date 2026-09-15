@@ -1,0 +1,39 @@
+{
+  "dataset_id": "day04_v3_helpdesk_bonus_warranty",
+  "dataset_role": "bonus",
+  "description": "Bonus-tool evaluation for deterministic local warranty eligibility. This file is separate from the required 10 group cases.",
+  "cases": [
+    {
+      "id": "B01_warranty_hardware_eligible", "phase": "B", "suite": "extension",
+      "query": "Laptop LT-204 bị lỗi phần cứng, còn bảo hành không?",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "check_warranty_eligibility", "args": {"asset_id": "LT-204", "issue_type": "hardware"}}]},
+      "metadata": {"what_it_tests": "Route warranty question to the bonus local tool with a precise asset and issue type."}
+    },
+    {
+      "id": "B02_warranty_expired_asset", "phase": "B", "suite": "extension",
+      "query": "Kiểm tra điều kiện bảo hành cho lỗi bàn phím của máy MB-012.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "check_warranty_eligibility", "args": {"asset_id": "MB-012", "issue_type": "keyboard"}}]},
+      "metadata": {"what_it_tests": "The same bonus tool must support a different issue type and expired warranty outcome."}
+    },
+    {
+      "id": "B03_warranty_missing_asset", "phase": "B", "suite": "extension",
+      "query": "Máy của tôi bị chai pin, còn bảo hành không?",
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+      "metadata": {"what_it_tests": "The agent must not guess an asset ID before the bonus lookup."}
+    },
+    {
+      "id": "B04_warranty_corrected_asset", "phase": "B", "suite": "extension",
+      "turns": [
+        {"role": "user", "content": "Kiểm tra bảo hành lỗi display cho LT-240."},
+        {"role": "user", "content": "Mình nhầm mã máy, là LT-318."},
+        {"role": "user", "content": "Đúng, kiểm tra bảo hành màn hình cho mã mới."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "check_warranty_eligibility", "args": {"asset_id": "LT-318", "issue_type": "display"}}]},
+      "metadata": {"what_it_tests": "Corrected asset information must win before the read-only bonus lookup."}
+    }
+  ]
+}

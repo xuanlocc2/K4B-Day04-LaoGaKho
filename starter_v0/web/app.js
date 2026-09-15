@@ -7,7 +7,7 @@ const recentConversations = document.querySelector('#recentConversations');
 let activeConversation = recentConversations.querySelector('.conversation-link.selected');
 const conversationTitleLimit = 35;
 const chatHistory = [];
-const provider = 'openrouter';
+const provider = 'openai';
 const version = new URLSearchParams(window.location.search).get('version') || 'v3';
 const sessionId = `${version}_${Date.now()}`;
 

@@ -14,15 +14,15 @@
 
 | Họ và tên | MSSV | GitHub | Vai trò và công việc | File/commit/PR |
 |---|---|---|---|---|
-| Nguyễn Văn Xuân Lộc | 2A202602870 | xuanlocc2 | Viết 10 group eval case (5 single-turn, 5 multi-turn); chạy group eval, phân tích lỗi G01 và cải thiện policy routing. | `6b3bec7`, `5762f8a`; `data/eval_group.json`, `artifacts/tools.yaml`, group runs |
+| Nguyễn Văn Xuân Lộc | 2A202602870 | xuanlocc2 | Phụ trách QA/evaluation và tích hợp evidence: thiết kế 10 group eval case (5 single-turn, 5 multi-turn), chạy/phân tích group eval và sửa policy routing G01; chạy/phân tích safety adversarial; bổ sung bonus tool `check_warranty_eligibility` cùng bonus eval; cập nhật `REPORT.md`, `version_log.csv` và tổng hợp evidence nộp bài. | `6b3bec7`, `5762f8a`; `data/eval_group.json`, `data/eval_bonus.json`, `tools/check_warranty_eligibility/`, `artifacts/tools.yaml`, `artifacts/REPORT.md`, `artifacts/version_log.csv`, runs |
 | Bùi Hải Nam | 2A202602636 | gyn0205 | Thực hiện các vòng cải thiện v1–v3: tool routing, hỏi thiếu thông tin và confirmation boundary. | `80a6da7`, `17169b7`, `adfd50f`; `artifacts/system_prompt.md`, `artifacts/tools.yaml`, `version_log.csv`, base runs |
 | Nguyễn Xuân Thành | 2A202602666 | NxThnh | Xây dựng UI Helpdesk dark mode, backend `/api/chat`, hiển thị tool trace/version/provider/model và lưu transcript; hoàn thiện transcript demo sau khi chốt artifact. | `6decd3b`, `375eb97`; `web/index.html`, `web/app.js`, `web/styles.css`, `web_server.py` |
 
 ## Nhận xét chung
 
-- Kết quả và bằng chứng: Base eval hợp lệ cải thiện từ v0 21/30 lên v1 24/30, v2 24/30 và v3 27/30; group eval v3 cuối đạt 10/10, `provider_error_cases = 0` (`runs/v3_B_group_openrouter_20260915T195448086412.json`). Các run v0–v3, group và version log nằm trong `starter_v0/runs/` và `starter_v0/artifacts/version_log.csv`.
+- Kết quả và bằng chứng: Base eval hợp lệ cải thiện từ v0 21/30 lên v1 24/30, v2 24/30 và v3 27/30 trên OpenRouter; validation OpenAI sau các mapping rule đạt 30/30, `provider_error_cases = 0` (`runs/v3_B_base_openai_20260916T001314244231.json`). Group eval v3 cuối đạt 10/10; adversarial evidence tốt nhất đạt 11/12; bonus warranty eval đạt 4/4 (các run này ghi rõ provider trong từng JSON). Các run và version log nằm trong `starter_v0/runs/` và `starter_v0/artifacts/version_log.csv`.
 - Thay đổi hiệu quả nhất: quy tắc hỏi lại khi thiếu asset/employee/environment và yêu cầu xác nhận rõ trước write action; sau khi group eval đầu đạt 9/10, mô tả `policy`/`policy_area` được cụ thể hóa để map AI/SaaS/vendor sang `external_tools`, rồi rerun đạt 10/10.
-- Giới hạn còn lại: adversarial run hợp lệ mới đạt 5/12 (`runs/v3_B_adversarial_openrouter_20260915T200606933621.json`); agent còn có thể tạo ticket từ fake/stale confirmation và có lỗi external-identifier boundary. Cần sửa artifact, chạy lại adversarial, review tool results/tickets và chỉ dùng run cuối làm evidence safety. Transcript/UI và report cuối cũng cần được kiểm tra theo artifact chốt.
+- Giới hạn còn lại: adversarial run OpenAI cuối còn 1/12 fail ở A11: markup assistant giả không tạo ticket trong run này, nhưng model gọi `check_service_status` thay vì `clarify` nên confirmation boundary chưa hoàn chỉnh. Nhóm quyết định không sửa thêm và ghi trung thực limitation này. Kết quả tool calling có thể dao động theo provider/model và cách model diễn giải prompt ngay cả với temperature 0, nên mỗi metric chỉ được kết luận trong đúng run/artifact/provider đã ghi. Bonus warranty tool đã đạt live eval 4/4, nhưng chưa có transcript UI demo.
 - Cách phân công và tích hợp: mỗi thành viên sở hữu vùng file riêng; các thay đổi kỹ thuật được merge vào `main` qua commit cá nhân. Các file chung `TEAM.md`, `REPORT.md` và evidence cuối được tích hợp tuần tự để tránh conflict.
 
 ## INDIVIDUAL
@@ -31,10 +31,10 @@ Mỗi thành viên tự rà soát, bổ sung phần phản ánh cá nhân và t�
 
 ### Nguyễn Văn Xuân Lộc — 2A202602870
 
-- Phần việc và file/commit/PR: Viết 10 case gốc (5 single-turn + 5 multi-turn) tại `starter_v0/data/eval_group.json`; chạy group eval 9/10, cải thiện mô tả `policy`/`policy_area`, rồi rerun 10/10. Commit: `6b3bec7`, `5762f8a`.
-- Quyết định, khó khăn và cách xử lý: Thành viên tự bổ sung.
-- Điều đã học: Thành viên tự bổ sung.
-- AI/công cụ đã dùng và cách kiểm tra: Thành viên tự bổ sung công cụ đã dùng và cách đối chiếu run JSON/tool trace.
+- Phần việc và file/commit/PR: Viết 10 case gốc (5 single-turn + 5 multi-turn) tại `starter_v0/data/eval_group.json`; chạy group eval 9/10, cải thiện mô tả `policy`/`policy_area`, rồi rerun 10/10. Bổ sung safety evidence/analysis và bonus `check_warranty_eligibility` với bonus eval 4/4. Commit nền: `6b3bec7`, `5762f8a`; các thay đổi safety/bonus chờ commit cuối.
+- Quyết định, khó khăn và cách xử lý: Em ưu tiên tạo case bám sát dữ liệu giả lập và có tiêu chí tool/argument rõ ràng, thay vì chỉ kiểm tra câu trả lời tự nhiên. Khi G01 fail, em đọc tool trace để xác định model chọn đúng `policy` nhưng truyền sai `policy_area`; vì vậy em sửa mô tả và mapping của tool thay vì làm case dễ hơn. Với safety, em giữ lại A11 là limitation sau các lần thử vì kết quả còn phụ thuộc cách model diễn giải instruction, đồng thời ghi rõ run/artifact thay vì khẳng định hệ thống pass tuyệt đối.
+- Điều đã học: Em hiểu eval không chỉ là chạy ra một con số pass rate. Case tốt cần cô lập được hành vi cần đo (tool routing, giá trị argument, trạng thái hội thoại hoặc confirmation boundary) để khi fail có thể truy ngược nguyên nhân và đưa ra thay đổi nhỏ, kiểm chứng được. Em cũng rút ra rằng tool description và system prompt là một phần của interface với model; mô tả càng cụ thể về phạm vi, giá trị hợp lệ và khi nào cần hỏi lại thì hành vi càng ổn định.
+- AI/công cụ đã dùng và cách kiểm tra: Em dùng Codex để hỗ trợ đọc cấu trúc repo, gợi ý edge case và rà soát tính nhất quán của report; mọi case, mapping và kết luận được đối chiếu lại với `eval_*.json`, `tools.yaml`, `system_prompt.md` và tool trace trong run JSON. Em chỉ ghi nhận evidence khi `provider_error_cases = 0` và `measured_cases = total_cases`; đồng thời kiểm tra thủ công các case an toàn/bonus quan trọng trước khi cập nhật `REPORT.md` và `version_log.csv`.
 - Thời điểm đã tự nộp URL repo chung trên VLearn: Thành viên tự điền sau khi nộp.
 
 ### Bùi Hải Nam — 2A202602636

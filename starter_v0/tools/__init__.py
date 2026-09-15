@@ -6,6 +6,7 @@ from typing import Any
 import yaml
 
 from .clarify.tool import ask_user
+from .check_warranty_eligibility.tool import check_warranty_eligibility
 from .check_service_status.tool import check_service_status
 from .create_ticket.tool import create_ticket
 from .format_incident_report.tool import format_incident_report
@@ -22,6 +23,7 @@ from .search_device_info.tool import search_device_info
 # this registry and tools.yaml, then test it with team-authored cases.
 TOOL_FUNCTIONS = {
     "clarify": ask_user,
+    "check_warranty_eligibility": check_warranty_eligibility,
     "search_kb": search_kb,
     "search_device_info": search_device_info,
     "check_service_status": check_service_status,

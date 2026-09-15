@@ -44,7 +44,7 @@ class Handler(BaseHTTPRequestHandler):
         try:
             length = int(self.headers.get("Content-Length", "0"))
             request = json.loads(self.rfile.read(length))
-            provider_name = request.get("provider", "openrouter")
+            provider_name = request.get("provider", "openai")
             version = str(request.get("version", "v3"))
             if provider_name not in {"openrouter", "openai", "anthropic", "gemini"}:
                 raise ValueError("unsupported provider")

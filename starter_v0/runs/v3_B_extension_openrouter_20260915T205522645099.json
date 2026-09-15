@@ -1,0 +1,284 @@
+{
+  "run_id": "v3_B_extension_openrouter_20260915T205522645099",
+  "version": "v3",
+  "artifact_version": "v3+p32bacc8513c5+t4fd07e73dcef",
+  "prompt_hash": "32bacc8513c5616dd0b5051e434c0649337aebf4a757448c77c26762df48ffdf",
+  "tools_hash": "4fd07e73dcefa25476e06fab48962c12a2995556542434f07d2dd77674c47768",
+  "phase": "B",
+  "suite": "extension",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "E:\\Document\\vinai\\lab\\day4\\K4B-Day04-LaoGaKho\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "E:\\Document\\vinai\\lab\\day4\\K4B-Day04-LaoGaKho\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_bonus.json",
+  "dataset_id": "day04_v3_helpdesk_bonus_warranty",
+  "dataset_role": "bonus",
+  "description": "Bonus-tool evaluation for deterministic local warranty eligibility. This file is separate from the required 10 group cases.",
+  "generated_at": "2026-09-15T20:55:22",
+  "summary": {
+    "total_cases": 4,
+    "measured_cases": 4,
+    "provider_error_cases": 0,
+    "passed_cases": 4,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "B01_warranty_hardware_eligible",
+      "phase": "B",
+      "suite": "extension",
+      "case_suite": "extension",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Route warranty question to the bonus local tool with a precise asset and issue type."
+      },
+      "input": "Laptop LT-204 bị lỗi phần cứng, còn bảo hành không?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_warranty_eligibility",
+            "args": {
+              "asset_id": "LT-204",
+              "issue_type": "hardware"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "check_warranty_eligibility",
+            "args": {
+              "asset_id": "LT-204",
+              "issue_type": "hardware"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "check_warranty_eligibility",
+          "args": {
+            "asset_id": "LT-204",
+            "issue_type": "hardware"
+          },
+          "result": {
+            "tool": "check_warranty_eligibility",
+            "asset_id": "LT-204",
+            "issue_type": "hardware",
+            "reference_date": "2026-09-14",
+            "warranty_until": "2027-02-11",
+            "days_remaining": 150,
+            "eligible": true,
+            "recommended_next_step": "Collect diagnostics, then ask for explicit confirmation before creating a vendor-repair ticket.",
+            "data_source": "fictional_local_assets"
+          }
+        }
+      ]
+    },
+    {
+      "id": "B02_warranty_expired_asset",
+      "phase": "B",
+      "suite": "extension",
+      "case_suite": "extension",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "The same bonus tool must support a different issue type and expired warranty outcome."
+      },
+      "input": "Kiểm tra điều kiện bảo hành cho lỗi bàn phím của máy MB-012.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_warranty_eligibility",
+            "args": {
+              "asset_id": "MB-012",
+              "issue_type": "keyboard"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "check_warranty_eligibility",
+            "args": {
+              "asset_id": "MB-012",
+              "issue_type": "keyboard"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "check_warranty_eligibility",
+          "args": {
+            "asset_id": "MB-012",
+            "issue_type": "keyboard"
+          },
+          "result": {
+            "tool": "check_warranty_eligibility",
+            "asset_id": "MB-012",
+            "issue_type": "keyboard",
+            "reference_date": "2026-09-14",
+            "warranty_until": "2026-03-21",
+            "days_remaining": -177,
+            "eligible": false,
+            "recommended_next_step": "Warranty has expired; provide the support option and ask before creating any out-of-warranty ticket.",
+            "data_source": "fictional_local_assets"
+          }
+        }
+      ]
+    },
+    {
+      "id": "B03_warranty_missing_asset",
+      "phase": "B",
+      "suite": "extension",
+      "case_suite": "extension",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "The agent must not guess an asset ID before the bonus lookup."
+      },
+      "input": "Máy của tôi bị chai pin, còn bảo hành không?",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Vui lòng cung cấp mã tài sản của máy để tôi kiểm tra tình trạng bảo hành.",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Vui lòng cung cấp mã tài sản của máy để tôi kiểm tra tình trạng bảo hành.",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "clarify",
+            "question": "Vui lòng cung cấp mã tài sản của máy để tôi kiểm tra tình trạng bảo hành.",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "B04_warranty_corrected_asset",
+      "phase": "B",
+      "suite": "extension",
+      "case_suite": "extension",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Corrected asset information must win before the read-only bonus lookup."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Kiểm tra bảo hành lỗi display cho LT-240."
+        },
+        {
+          "role": "user",
+          "content": "Mình nhầm mã máy, là LT-318."
+        },
+        {
+          "role": "user",
+          "content": "Đúng, kiểm tra bảo hành màn hình cho mã mới."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_warranty_eligibility",
+            "args": {
+              "asset_id": "LT-318",
+              "issue_type": "display"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "check_warranty_eligibility",
+            "args": {
+              "asset_id": "LT-318",
+              "issue_type": "display"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "check_warranty_eligibility",
+          "args": {
+            "asset_id": "LT-318",
+            "issue_type": "display"
+          },
+          "result": {
+            "tool": "check_warranty_eligibility",
+            "asset_id": "LT-318",
+            "issue_type": "display",
+            "reference_date": "2026-09-14",
+            "warranty_until": "2027-01-17",
+            "days_remaining": 125,
+            "eligible": true,
+            "recommended_next_step": "Collect diagnostics, then ask for explicit confirmation before creating a vendor-repair ticket.",
+            "data_source": "fictional_local_assets"
+          }
+        }
+      ]
+    }
+  ]
+}
